@@ -8,6 +8,9 @@ use yii\web\Controller;
 
 class CategoriesController extends Controller
 {
+    /**
+     * @return string
+     */
     public function actionIndex()
     {
         $query = Category::find();
@@ -26,35 +29,27 @@ class CategoriesController extends Controller
             'categories' => $categories,
             'pagination' => $pagination,
         ]);
-
     }
 
+    /**
+     * @return string|\yii\web\Response
+     */
     public function actionCreate()
     {
         $category = new Category();
         if (\Yii::$app->request->isPost) {
-
             if ($category->load(\Yii::$app->request->post()) && $category->save()) {
                 return $this->redirect('index');
             }
-
         }
 
         $categories = Category::find()->select('title')->where([
             'status' => Category::STATUS_ACTIVE
         ])->indexBy('id')->column();
 
-
         return $this->render('create', [
             'category' => $category,
             'categories' => $categories,
         ]);
     }
-
-//    public function actionTest(int $id)
-//    {
-//        var_dump($id);
-//        die();
-//    }
-
 }
