@@ -8,6 +8,7 @@ use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use yii\web\Response;
+use common\models\User;
 
 /**
  * Site controller
@@ -72,6 +73,9 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+
+
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }

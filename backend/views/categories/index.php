@@ -10,7 +10,7 @@ use common\models\Category;
     $model = new Category();
 ?>
 <style>
-    td{
+    td, th{
         padding: 5px;
     }
     tr:nth-child(even){
@@ -38,17 +38,21 @@ use common\models\Category;
             <th>Батьківська категорія</th>
             <th>Створено</th>
             <th>Оновлено</th>
+            <th>Дії</th>
         </tr>
     </thead>
     <tbody>
         <?php foreach ($categories as $category): ?>
             <tr>
                 <td><?= $category->id ?></td>
-                <td><?= $category->title ?></td>
+                <td><?= Html::a($category->title, ['categories/view', 'id' => $category->id]) ?></td>
                 <td><?= $category->status ?></td>
                 <td><?= $category->parent_id ?></td>
                 <td><?= $category->created_at ?></td>
                 <td><?= $category->updated_at ?></td>
+                <td>
+                    <?= Html::a('&#9998;', ['categories/update', 'id' => $category->id]) ?>
+                </td>
             </tr>
         <?php endforeach; ?>
     </tbody>

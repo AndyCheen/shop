@@ -13,6 +13,8 @@ use yii\db\ActiveRecord;
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $title
+ *
+ * @property-read Category $parent
  */
 class Category extends ActiveRecord
 {
@@ -42,5 +44,12 @@ class Category extends ActiveRecord
             'parent_id' => 'Батьківська категорія',
             'status' => 'Статус',
         ];
+    }
+
+    public function getParent()
+    {
+        return $this->hasOne(Category::class, [
+            'id' => 'parent_id',
+        ]);
     }
 }
