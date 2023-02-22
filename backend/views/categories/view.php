@@ -8,6 +8,10 @@ use yii\widgets\DetailView;
  *
  */
 
+$this->title = $category->title;
+$this->params['breadcrumbs'][] = ['label' => 'Категорії', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
+
 echo DetailView::widget([
     'model' => $category,
     'attributes' => [

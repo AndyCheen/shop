@@ -74,6 +74,7 @@ class CategoriesController extends Controller
     {
         $category = Category::findOne($id);
 
+
         if (\Yii::$app->request->isPost) {
             if ($category->load(\Yii::$app->request->post()) && $category->save()) {
                 return $this->redirect(['update', 'id' => $id]);
@@ -86,7 +87,10 @@ class CategoriesController extends Controller
 
         $categories = Category::find()->select('title')->where([
             'status' => Category::STATUS_ACTIVE
-        ])->indexBy('id')->column();
+        ])->andWhere(['!=', 'id', $category->id])->indexBy('id')->column();
+
+
+
         return $this->render('update', [
             'category' => $category,
             'categories' => $categories,
