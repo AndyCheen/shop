@@ -1,60 +1,64 @@
 <?php
+
+use backend\models\CategorySearch;
+use yii\data\ActiveDataProvider;
 use yii\helpers\Html;
 use yii\widgets\LinkPager;
 use yii\widgets\ActiveForm;
 use common\models\Category;
+use yii\grid\GridView;
 
-    $this->title = 'Categories';
-    $this->params['breadcrumbs'][] = $this->title;
+/**
+ * @var $dataProvider ActiveDataProvider
+ * @var $searchModel CategorySearch
+ * @var  $categories array
+ */
 
-    $model = new Category();
+$this->title = 'Категорії';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<style>
-    td, th{
-        padding: 5px;
-    }
-    tr:nth-child(even){
-        background-color: #ddd;
-    }
-    tr.table-head{
-        background-color: #FFD573;
-    }
-</style>
-<h1>Categories</h1>
 
-<?php $form = ActiveForm::begin(); ?>
-<!--    --><?php //= $form->field($model, 'name') ?>
-<?php ActiveForm::end(); ?>
+<?php if (Yii::$app->session->hasFlash('seccess')): ?>
+<div class="alert alert-success">
+    <?= Yii::$app->session->getFlash('seccess') ?>
+</div>
+<?php endif; ?>
 
-<?= Html::a('Створити категорію', 'create', [
-        'class' => 'btn btn-primary',
-]) ?>
-<table>
-    <thead>
-        <tr class="table-head">
-            <th>ID</th>
-            <th>Назва</th>
-            <th>Статус</th>
-            <th>Батьківська категорія</th>
-            <th>Створено</th>
-            <th>Оновлено</th>
-            <th>Дії</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($categories as $category): ?>
-            <tr>
-                <td><?= $category->id ?></td>
-                <td><?= Html::a($category->title, ['categories/view', 'id' => $category->id]) ?></td>
-                <td><?= $category->status ?></td>
-                <td><?= $category->parent_id ?></td>
-                <td><?= $category->created_at ?></td>
-                <td><?= $category->updated_at ?></td>
-                <td>
-                    <?= Html::a('&#9998;', ['categories/update', 'id' => $category->id]) ?>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </tbody>
-</table>
-<?= LinkPager::widget(['pagination' => $pagination]) ?>
+<?php if (Yii::$app->session->hasFlash('error')): ?>
+<div class="alert alert-danger">
+    <?= Yii::$app->session->getFlash('error'); ?>
+</div>
+<?php endif; ?>
+<?= Html::a('Нова категорія', 'create', ['class' => 'btn btn-primary active'])  ?>
+<?php
+echo GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => [
+        'id',
+        'title',
+        [
+            'attribute' => 'parent_id',
+            'value' => function (Category $category)
+            {
+                return $category->parent->title ?? null;
+            },
+            'filter' => $categories,
+        ],
+        [
+            'attribute' => 'status',
+            'value' => function (Category $category)
+            {
+                return $category->status === 1 ? 'Активний' : 'Заблоковоно';
+            },
+            'filter' => [
+                Category::STATUS_ACTIVE => 'Активна',
+                Category::STATUS_INACTIVE => 'Не активна',
+            ]
+        ],
+        ['class' => 'yii\grid\ActionColumn'],
+    ],
+]);
+?>
+
+

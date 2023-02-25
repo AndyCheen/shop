@@ -2,6 +2,7 @@
 
 namespace backend\controllers;
 
+use backend\models\CategorySearch;
 use common\models\Category;
 use yii\data\Pagination;
 use yii\db\Exception;
@@ -15,21 +16,17 @@ class CategoriesController extends Controller
      */
     public function actionIndex()
     {
-        $query = Category::find();
+        $searchModel = new CategorySearch();
+        $dataProvider = $searchModel->search(\Yii::$app->request->get());
 
-        $pagination = new Pagination([
-            'defaultPageSize' => 10,
-            'totalCount' => $query->count(),
-        ]);
-
-        $categories = $query->orderBy('id')
-            ->limit($pagination->limit)
-            ->offset($pagination->offset)
-            ->all();
+        $categories = Category::find()->select('title')->where([
+            'status' => Category::STATUS_ACTIVE
+        ])->indexBy('id')->column();
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
             'categories' => $categories,
-            'pagination' => $pagination,
         ]);
     }
 
@@ -40,7 +37,10 @@ class CategoriesController extends Controller
     {
         $category = new Category();
         if (\Yii::$app->request->isPost) {
-            if ($category->load(\Yii::$app->request->post()) && $category->save()) {
+            $params = \Yii::$app->request->post();
+
+            if ($category->load($params) && $category->save()) {
+                \Yii::$app->session->setFlash('success', "Категорія {$params['Category']['title']} створена");
                 return $this->redirect('index');
             }
         }
@@ -57,15 +57,15 @@ class CategoriesController extends Controller
 
     public function actionView(int $id)
     {
-        $categoru = Category::findOne($id);
+        $category = Category::findOne($id);
 
 
-        if ($categoru === null) {
+        if ($category === null || $category['is_deleted'] == 1) {
             throw new NotFoundHttpException("Категорії з id {$id} не існує");
         }
 
         return $this->render('view', [
-            'category' => $categoru,
+            'category' => $category,
         ]);
     }
 
@@ -81,7 +81,7 @@ class CategoriesController extends Controller
             }
         }
 
-        if ($category === null) {
+        if ($category === null || $category['is_deleted'] == 1) {
             throw new NotFoundHttpException("Категорії з id {$id} не існує");
         }
 
@@ -95,5 +95,26 @@ class CategoriesController extends Controller
             'category' => $category,
             'categories' => $categories,
         ]);
+    }
+
+    public function actionDelete(int $id)
+    {
+        $category = Category::findOne($id);
+
+        if (!$category) {
+            throw new NotFoundHttpException("Категорію з id: $id не знайдено");
+        }
+
+        $category->is_deleted = 1;
+
+        if ($category->save()) {
+            \Yii::$app->session->setFlash('seccess', "Категорію з id: $id видалено");
+        } else {
+            \Yii::$app->session->setFlash('error', 'Відбулась помилка. Категорыя не видалена.');
+        }
+
+        return $this->redirect('index');
+
+
     }
 }
