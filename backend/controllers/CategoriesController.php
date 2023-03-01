@@ -4,6 +4,8 @@ namespace backend\controllers;
 
 use backend\models\CategorySearch;
 use common\models\Category;
+use common\models\Good;
+use Yii;
 use yii\data\Pagination;
 use yii\db\Exception;
 use yii\web\Controller;
@@ -81,12 +83,13 @@ class CategoriesController extends Controller
             }
         }
 
-        if ($category === null || $category['is_deleted'] == 1) {
+        if ($category === null || $category['is_deleted'] == Category::DELETED) {
             throw new NotFoundHttpException("Категорії з id {$id} не існує");
         }
 
         $categories = Category::find()->select('title')->where([
-            'status' => Category::STATUS_ACTIVE
+            'status' => Category::STATUS_ACTIVE,
+            'is_deleted' => Category::NOT_DELETED,
         ])->andWhere(['!=', 'id', $category->id])->indexBy('id')->column();
 
 
@@ -105,12 +108,22 @@ class CategoriesController extends Controller
             throw new NotFoundHttpException("Категорію з id: $id не знайдено");
         }
 
+        $hasGoodsInCategory = Good::find()->select('id')->where([
+            'category_id' => $id
+        ])->exists();
+
+        if ($hasGoodsInCategory) {
+            Yii::$app->session->setFlash('error', "Не можу видалити категорію $id через наявність в ній товарів");
+
+            return $this->redirect('index');
+        }
+
         $category->is_deleted = 1;
 
         if ($category->save()) {
-            \Yii::$app->session->setFlash('seccess', "Категорію з id: $id видалено");
+            Yii::$app->session->setFlash('success', "Категорію з id: $id видалено");
         } else {
-            \Yii::$app->session->setFlash('error', 'Відбулась помилка. Категорыя не видалена.');
+            Yii::$app->session->setFlash('error', 'Відбулась помилка. Категорыя не видалена.');
         }
 
         return $this->redirect('index');

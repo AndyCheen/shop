@@ -18,20 +18,8 @@ $this->title = 'Категорії';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php if (Yii::$app->session->hasFlash('seccess')): ?>
-<div class="alert alert-success">
-    <?= Yii::$app->session->getFlash('seccess') ?>
-</div>
-<?php endif; ?>
-
-<?php if (Yii::$app->session->hasFlash('error')): ?>
-<div class="alert alert-danger">
-    <?= Yii::$app->session->getFlash('error'); ?>
-</div>
-<?php endif; ?>
 <?= Html::a('Нова категорія', 'create', ['class' => 'btn btn-primary active'])  ?>
-<?php
-echo GridView::widget([
+<?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
