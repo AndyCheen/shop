@@ -21,7 +21,7 @@ class m230225_162029_create_goods_table extends Migration
             'amount' => $this->integer()->notNull(),
             'price' => $this->decimal(10, 2)->notNull(),
             'new_price' => $this->decimal(10, 2),
-            'rating' => $this->decimal(1, 1),
+            'rating' => $this->decimal(),
             'description' => $this->text(),
             'created_at' => $this->timestamp()->notNull(),
             'updatet_at' => $this->timestamp(),

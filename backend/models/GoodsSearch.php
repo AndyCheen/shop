@@ -2,46 +2,46 @@
 
 namespace backend\models;
 
-use common\models\Category;
+use common\models\Good;
 use yii\data\ActiveDataProvider;
 
-class CategorySearch extends Category
+class GoodsSearch extends Good
 {
-
     public function rules(): array
     {
         return [
-            [['id', 'parent_id', 'status', 'is_deleted'], 'integer'],
-            [['title', 'created_at', 'updated_at'], 'string'],
+            [['id', 'category_id', 'status', 'is_deleted', 'amount'], 'integer'],
+            [['title', 'description', 'created_at'], 'string'],
+            [['price', 'new_price', 'rating'], 'number'],
         ];
     }
 
     public function search(array $params): ActiveDataProvider
     {
-        $query = Category::find()->where(['is_deleted' => Category::NOT_DELETED]);
+        $query = Good::find()->where(['is_deleted' => Good::NOT_DELETED]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
         $this->load($params);
+
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'parent_id' => $this->parent_id,
+            'category_id' => $this->category_id,
             'status' => $this->status,
+            'amount' => $this->amount,
+            'price' => $this->price,
+            'new_price' => $this->new_price,
+            'rating' => $this->rating
         ]);
 
         $query->andFilterWhere(['like', 'title', $this->title]);
 
         return $dataProvider;
     }
-
-
-
 }

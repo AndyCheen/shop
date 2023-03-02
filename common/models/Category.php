@@ -23,6 +23,7 @@ class Category extends ActiveRecord
     public const STATUS_ACTIVE = 1;
     public const STATUS_INACTIVE = 0;
     public const DELETED = 1;
+    public const NOT_DELETED = 0;
     public static function tableName()
     {
         return '{{%categories}}';
@@ -34,8 +35,8 @@ class Category extends ActiveRecord
             [['title'], 'required'],
             [['parent_id'], 'default', 'value' => self::ROOT_CATEGORY_ID],
             [['status'], 'default', 'value' => self::STATUS_ACTIVE],
-            [['is_deleted'], 'default',  'value' => 0],
-            [['created_at', 'updated_at'], 'safe'],
+            [['is_deleted'], 'default',  'value' => self::NOT_DELETED],
+            [['created_at'], 'safe'],
         ];
     }
 
