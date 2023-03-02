@@ -4,7 +4,6 @@ namespace backend\models;
 
 use common\models\Good;
 use yii\data\ActiveDataProvider;
-use yii\debug\models\timeline\DataProvider;
 
 class GoodsSearch extends Good
 {

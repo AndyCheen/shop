@@ -20,19 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 ?>
 
-<?php if (Yii::$app->session->hasFlash('access')): ?>
-    <div class="alert alert-success">
-        <?= Yii::$app->session->getFlash('seccess') ?>
-    </div>
-<?php endif; ?>
-
-<?php if (Yii::$app->session->hasFlash('error')): ?>
-    <div class="alert alert-danger">
-        <?= Yii::$app->session->getFlash('error'); ?>
-    </div>
-<?php endif; ?>
-
-<?= Html::a('Новий товар', ['goods/create'], ['class' => 'btn btn-primary active']); ?>
+<?= Html::a('Новий товар', 'create', ['class' => 'btn btn-primary active']); ?>
 
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
@@ -52,11 +40,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'value' => function (Good $good) {
                 return $good->status === Good::STATUS_ACTIVE ? 'Активний' : 'Заблокований';
             },
-            'filter' => [
-                Good::STATUS_ACTIVE => 'Активний',
-                Good::STATUS_INACTIVE => 'Заблокований'
-            ]
-
+            'filter' => Good::STATUSES,
         ],
         'amount',
         'price',

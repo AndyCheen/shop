@@ -16,10 +16,7 @@ use yii\helpers\Html;
 
 <?= $form->field($good, 'category_id')->dropDownList($categories); ?>
 
-<?= $form->field($good, 'status')->dropDownList([
-    Good::STATUS_ACTIVE => 'Активний',
-    Good::STATUS_INACTIVE => 'Не активний',
-]); ?>
+<?= $form->field($good, 'status')->dropDownList(Good::STATUSES); ?>
 
 <?= $form->field($good, 'description')->textarea(); ?>
 

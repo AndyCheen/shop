@@ -19,6 +19,7 @@ class GoodsController extends Controller
 
         $categories = Category::find()->select('title')->where([
             'status' => Category::STATUS_ACTIVE,
+            'is_deleted' => Category::NOT_DELETED,
         ])->indexBy('id')->column();
 
 
@@ -31,24 +32,21 @@ class GoodsController extends Controller
 
     public function actionCreate()
     {
+
         $good = new Good;
 
         if (\Yii::$app->request->isPost) {
             $params = \Yii::$app->request->post();
 
             if ($good->load($params) && $good->save()) {
-                $savedGood = Good::find()->select('id')->where([
-                    'title' => $params['Good']['title'],
-                ])->orderBy([
-                    'id' => SORT_DESC,
-                ])->one();
-                \Yii::$app->session->setFlash('success', "Товар з id: {$savedGood['id']} створений");
+
+                \Yii::$app->session->setFlash('success', "Товар з id: {$good->id} створений");
 
                 return $this->redirect('index');
             }
         }
 
-        $categories = Category::find()->select('title')->where([
+        $categories = Category::find()->select(['title'])->where([
             'status' => Category::STATUS_ACTIVE
         ])->andWhere(['=', 'is_deleted', Good::NOT_DELETED])->indexBy('id')->column();
 

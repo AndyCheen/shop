@@ -24,13 +24,17 @@ use yii\db\ActiveRecord;
  *
  * @property-read Category $category
  */
-
 class Good extends ActiveRecord
 {
     public const STATUS_ACTIVE = 1;
     public const STATUS_INACTIVE = 0;
     public const DELETED = 1;
     public const NOT_DELETED = 0;
+
+    public const STATUSES = [
+        self::STATUS_ACTIVE => 'Активний',
+        self::STATUS_INACTIVE => 'Не активний',
+    ];
 
     public static function tableName()
     {
