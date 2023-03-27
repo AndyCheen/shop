@@ -1,23 +1,23 @@
 <?php
 
-use common\models\Good;
+use common\models\Option;
 
 /**
- * @var $good Good
+ * @var $option Option
  * @var $categories array
  */
 
-$this->title = "Товар:{$good->id}";
+$this->title = "Параметр id: {$option->id}";
 
 $this->params['breadcrumbs'][] = [
-    'label' => 'Товари',
+    'label' => 'Параметри',
     'url' => 'index'
 ];
 $this->params['breadcrumbs'][] = $this->title;
-
 ?>
 
+
 <?= $this->render('form', [
-    'good' => $good,
+    'option' => $option,
     'categories' => $categories,
 ]); ?>

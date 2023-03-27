@@ -24,7 +24,7 @@ class Category extends ActiveRecord
     public const STATUS_INACTIVE = 0;
     public const DELETED = 1;
     public const NOT_DELETED = 0;
-    public static function tableName()
+    public static function tableName(): string
     {
         return '{{%categories}}';
     }

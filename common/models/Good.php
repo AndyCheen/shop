@@ -4,6 +4,8 @@ namespace common\models;
 
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\helpers\FileHelper;
+use yii\web\UploadedFile;
 
 /**
  * Good model
@@ -23,6 +25,7 @@ use yii\db\ActiveRecord;
  * @property string $deleted_at
  *
  * @property-read Category $category
+ * @property-read GoodsAttachment[] $goodsAttachments
  */
 class Good extends ActiveRecord
 {
@@ -30,6 +33,11 @@ class Good extends ActiveRecord
     public const STATUS_INACTIVE = 0;
     public const DELETED = 1;
     public const NOT_DELETED = 0;
+
+    /**
+     * @var UploadedFile[]
+     */
+    public $imageFiles;
 
     public const STATUSES = [
         self::STATUS_ACTIVE => 'Активний',
@@ -50,6 +58,7 @@ class Good extends ActiveRecord
             [['description'], 'string'],
             [['new_price'], 'number'],
             [['created_at'], 'safe'],
+            [['imageFiles'], 'file', 'skipOnEmpty' => true, 'extensions' => 'png, jpg', 'maxFiles' => 4]
         ];
     }
 
@@ -70,5 +79,34 @@ class Good extends ActiveRecord
     public function getCategory(): ActiveQuery
     {
         return $this->hasOne(Category::class, ['id' => 'category_id']);
+    }
+
+
+    public function upload()
+    {
+        if ($this->validate(['imageFiles'])) {
+            $path = 'images/' . $this->id;
+            FileHelper::createDirectory($path);
+            foreach ($this->imageFiles as $file) {
+                $filePath = $path . DIRECTORY_SEPARATOR . $file->baseName . '.' . $file->extension;
+                $fileSaved = $file->saveAs($filePath);
+
+                if ($fileSaved) {
+                    $goodsAttachment = new GoodsAttachment();
+                    $goodsAttachment->goods_id = $this->id;
+                    $goodsAttachment->url = $filePath;
+                    $goodsAttachment->save();
+                }
+
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public function getGoodsAttachments(): ActiveQuery
+    {
+        return $this->hasMany(GoodsAttachment::class, ['goods_id' => 'id']);
     }
 }

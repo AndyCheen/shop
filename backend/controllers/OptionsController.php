@@ -2,16 +2,16 @@
 
 namespace backend\controllers;
 
-use backend\controllers\actions\goods\CreateAction;
-use backend\controllers\actions\goods\DeleteAction;
-use backend\controllers\actions\goods\IndexAction;
-use backend\controllers\actions\goods\UpdateAction;
-use backend\controllers\actions\goods\ViewAction;
+use backend\controllers\actions\options\CreateAction;
+use backend\controllers\actions\options\DeleteAction;
+use backend\controllers\actions\options\IndexAction;
+use backend\controllers\actions\options\UpdateAction;
+use backend\controllers\actions\options\ViewAction;
+use common\models\Option;
 use yii\web\Controller;
 
-class GoodsController extends Controller
+class OptionsController extends Controller
 {
-
     public function actions(): array
     {
         return [

@@ -16,7 +16,7 @@ class GoodsAttachment extends ActiveRecord
     {
         return [
             [['goods_id', 'url'], 'required'],
-            [['goods_id'], 'number'],
+            [['goods_id'], 'integer'],
             [['url'], 'string'],
         ];
     }

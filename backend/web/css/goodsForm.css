@@ -1,0 +1,8 @@
+.option-item {
+    display: flex;
+    margin: 20px 0;
+}
+.form-control.optionSelect {
+    width: 30%;
+    margin-right: 20px;
+}

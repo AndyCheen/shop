@@ -2,6 +2,7 @@
 
 use common\models\Good;
 use yii\widgets\DetailView;
+use yii\helpers\Html;
 
 /**
  * @var $good Good
@@ -38,3 +39,12 @@ echo DetailView::widget([
         'description'
     ],
 ]);
+?>
+
+<div>
+    <?php foreach ($good->goodsAttachments as $attachment): ?>
+        <div><?= Html::img(DIRECTORY_SEPARATOR . $attachment->url, [
+                'width' => 200,
+            ]) ?></div>
+    <?php endforeach; ?>
+</div>
